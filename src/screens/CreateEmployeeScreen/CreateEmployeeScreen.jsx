@@ -3,6 +3,7 @@ import { Form, Button, Card, Modal, Row, Col } from "react-bootstrap";
 import states from "../../data/states";
 import { addEmployee } from "../../redux/EmployeeSlice";
 import { useDispatch } from "react-redux";
+import DatePicker from "react-datepicker";
 
 const CreateEmployeeScreen = () => {
   const [firstName, setFirstName] = useState("");
@@ -18,6 +19,18 @@ const CreateEmployeeScreen = () => {
 
   const dispatch = useDispatch();
 
+  const resetForm = () => {
+    setFirstName("");
+    setLastName("");
+    setDateOfBirth(new Date());
+    setStartDate(new Date());
+    setStreet("");
+    setCity("");
+    setState(states[0].abbreviation);
+    setZipCode("");
+    setDepartment("Sales");
+  };
+
   const saveEmployee = (e) => {
     e.preventDefault();
     const employee = {
@@ -32,10 +45,9 @@ const CreateEmployeeScreen = () => {
       zipCode,
     };
 
-    console.log(employee);
-
     dispatch(addEmployee(employee));
     setShowModal(true);
+    resetForm();
   };
 
   const handleClose = () => setShowModal(false);
@@ -100,7 +112,7 @@ const CreateEmployeeScreen = () => {
               </Col>
             </Row>
 
-            <Card className="mt-3">
+            <Card className="mt-3 bg-light">
               <Card.Body>
                 <Card.Title>Address</Card.Title>
                 <Form.Group controlId="street">
@@ -134,10 +146,11 @@ const CreateEmployeeScreen = () => {
                         as="select"
                         value={state}
                         onChange={(e) => setState(e.target.value)}
+                        multiple={false}
                         required
                       >
-                        {states.map((state) => (
-                          <option key={state.name} value={state.name}>
+                        {states.map((state, index) => (
+                          <option key={index} value={state.name}>
                             {state.name}
                           </option>
                         ))}
@@ -175,9 +188,11 @@ const CreateEmployeeScreen = () => {
               </Form.Control>
             </Form.Group>
 
-            <Button className="mt-3" variant="primary" type="submit" block>
-              Save
-            </Button>
+            <div className="text-center">
+              <Button className="mt-3" variant="primary" type="submit">
+                Save Employee
+              </Button>
+            </div>
           </Form>
         </Card.Body>
       </Card>
