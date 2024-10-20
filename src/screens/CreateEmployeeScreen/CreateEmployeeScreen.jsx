@@ -3,7 +3,6 @@ import { Form, Button, Card, Modal, Row, Col } from "react-bootstrap";
 import states from "../../data/states";
 import { addEmployee } from "../../redux/EmployeeSlice";
 import { useDispatch } from "react-redux";
-import DatePicker from "react-datepicker";
 
 const CreateEmployeeScreen = () => {
   const [firstName, setFirstName] = useState("");
