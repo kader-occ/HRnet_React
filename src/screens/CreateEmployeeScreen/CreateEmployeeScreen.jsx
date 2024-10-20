@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Form, Button, Card, Modal, Row, Col } from "react-bootstrap";
 import states from "../../data/states";
+import { addEmployee } from "../../redux/EmployeeSlice";
+import { useDispatch } from "react-redux";
 
 const CreateEmployeeScreen = () => {
   const [firstName, setFirstName] = useState("");
@@ -14,8 +16,25 @@ const CreateEmployeeScreen = () => {
   const [department, setDepartment] = useState("Sales");
   const [showModal, setShowModal] = useState(false);
 
-  const handleSubmit = (e) => {
+  const dispatch = useDispatch();
+
+  const saveEmployee = (e) => {
     e.preventDefault();
+    const employee = {
+      firstName,
+      lastName,
+      dateOfBirth: dateOfBirth,
+      startDate: startDate,
+      department,
+      street,
+      city,
+      state,
+      zipCode,
+    };
+
+    console.log(employee);
+
+    dispatch(addEmployee(employee));
     setShowModal(true);
   };
 
@@ -28,7 +47,7 @@ const CreateEmployeeScreen = () => {
           Create Employee
         </Card.Title>
         <Card.Body>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={saveEmployee}>
             <Row>
               <Col>
                 <Form.Group controlId="firstName">
@@ -38,6 +57,7 @@ const CreateEmployeeScreen = () => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Enter first name"
+                    required
                   />
                 </Form.Group>
               </Col>
@@ -49,6 +69,7 @@ const CreateEmployeeScreen = () => {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="Enter last name"
+                    required
                   />
                 </Form.Group>
               </Col>
@@ -62,6 +83,7 @@ const CreateEmployeeScreen = () => {
                     type="date"
                     value={dateOfBirth}
                     onChange={(e) => setDateOfBirth(e.target.value)}
+                    required
                   />
                 </Form.Group>
               </Col>
@@ -72,6 +94,7 @@ const CreateEmployeeScreen = () => {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
+                    required
                   />
                 </Form.Group>
               </Col>
@@ -87,6 +110,7 @@ const CreateEmployeeScreen = () => {
                     value={street}
                     onChange={(e) => setStreet(e.target.value)}
                     placeholder="Enter street"
+                    required
                   />
                 </Form.Group>
 
@@ -99,6 +123,7 @@ const CreateEmployeeScreen = () => {
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
                         placeholder="Enter city"
+                        required
                       />
                     </Form.Group>
                   </Col>
@@ -109,6 +134,7 @@ const CreateEmployeeScreen = () => {
                         as="select"
                         value={state}
                         onChange={(e) => setState(e.target.value)}
+                        required
                       >
                         {states.map((state) => (
                           <option key={state.name} value={state.name}>
@@ -127,6 +153,7 @@ const CreateEmployeeScreen = () => {
                     value={zipCode}
                     onChange={(e) => setZipCode(e.target.value)}
                     placeholder="Enter zip code"
+                    required
                   />
                 </Form.Group>
               </Card.Body>
@@ -138,6 +165,7 @@ const CreateEmployeeScreen = () => {
                 as="select"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
+                required
               >
                 <option>Sales</option>
                 <option>Marketing</option>
