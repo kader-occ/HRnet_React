@@ -52,6 +52,10 @@ const CreateEmployeeScreen = () => {
 
   const handleClose = () => setShowModal(false);
 
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
+
   return (
     <>
       <Card>
@@ -67,7 +71,9 @@ const CreateEmployeeScreen = () => {
                   <Form.Control
                     type="text"
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={(e) =>
+                      setFirstName(capitalizeFirstLetter(e.target.value))
+                    }
                     placeholder="Enter first name"
                     required
                   />
@@ -79,7 +85,9 @@ const CreateEmployeeScreen = () => {
                   <Form.Control
                     type="text"
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={(e) =>
+                      setLastName(capitalizeFirstLetter(e.target.value))
+                    }
                     placeholder="Enter last name"
                     required
                   />
@@ -133,7 +141,9 @@ const CreateEmployeeScreen = () => {
                       <Form.Control
                         type="text"
                         value={city}
-                        onChange={(e) => setCity(e.target.value)}
+                        onChange={(e) =>
+                          setCity(capitalizeFirstLetter(e.target.value))
+                        }
                         placeholder="Enter city"
                         required
                       />
@@ -149,8 +159,8 @@ const CreateEmployeeScreen = () => {
                         multiple={false}
                         required
                       >
-                        {states.map((state, index) => (
-                          <option key={index} value={state.name}>
+                        {states.map((state) => (
+                          <option key={state.name} value={state.name}>
                             {state.name}
                           </option>
                         ))}
