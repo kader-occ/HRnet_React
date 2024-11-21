@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Form, Button, Card, Modal, Row, Col } from "react-bootstrap";
+import { Form, Button, Card, Row, Col } from "react-bootstrap";
 import states from "../../data/states";
 import { addEmployee } from "../../redux/EmployeeSlice";
 import { useDispatch } from "react-redux";
+import { Modal } from "@studiokad/react-modal-component";
 
 const CreateEmployeeScreen = () => {
   const [firstName, setFirstName] = useState("");
@@ -14,7 +15,9 @@ const CreateEmployeeScreen = () => {
   const [state, setState] = useState(states);
   const [zipCode, setZipCode] = useState("");
   const [department, setDepartment] = useState("Sales");
-  const [showModal, setShowModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const closeModal = () => setIsModalOpen(false);
 
   const dispatch = useDispatch();
 
@@ -45,11 +48,9 @@ const CreateEmployeeScreen = () => {
     };
 
     dispatch(addEmployee(employee));
-    setShowModal(true);
+    setIsModalOpen(true);
     resetForm();
   };
-
-  const handleClose = () => setShowModal(false);
 
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -74,7 +75,6 @@ const CreateEmployeeScreen = () => {
                       setFirstName(capitalizeFirstLetter(e.target.value))
                     }
                     placeholder="Enter first name"
-                    required
                   />
                 </Form.Group>
               </Col>
@@ -88,7 +88,6 @@ const CreateEmployeeScreen = () => {
                       setLastName(capitalizeFirstLetter(e.target.value))
                     }
                     placeholder="Enter last name"
-                    required
                   />
                 </Form.Group>
               </Col>
@@ -102,7 +101,6 @@ const CreateEmployeeScreen = () => {
                     type="date"
                     value={dateOfBirth}
                     onChange={(e) => setDateOfBirth(e.target.value)}
-                    required
                   />
                 </Form.Group>
               </Col>
@@ -113,7 +111,6 @@ const CreateEmployeeScreen = () => {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    required
                   />
                 </Form.Group>
               </Col>
@@ -129,7 +126,6 @@ const CreateEmployeeScreen = () => {
                     value={street}
                     onChange={(e) => setStreet(e.target.value)}
                     placeholder="Enter street"
-                    required
                   />
                 </Form.Group>
 
@@ -144,7 +140,6 @@ const CreateEmployeeScreen = () => {
                           setCity(capitalizeFirstLetter(e.target.value))
                         }
                         placeholder="Enter city"
-                        required
                       />
                     </Form.Group>
                   </Col>
@@ -156,7 +151,6 @@ const CreateEmployeeScreen = () => {
                         value={state}
                         onChange={(e) => setState(e.target.value)}
                         multiple={false}
-                        required
                       >
                         {states.map((state) => (
                           <option key={state.name} value={state.name}>
@@ -175,7 +169,6 @@ const CreateEmployeeScreen = () => {
                     value={zipCode}
                     onChange={(e) => setZipCode(e.target.value)}
                     placeholder="Enter zip code"
-                    required
                   />
                 </Form.Group>
               </Card.Body>
@@ -187,7 +180,6 @@ const CreateEmployeeScreen = () => {
                 as="select"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-                required
               >
                 <option>Sales</option>
                 <option>Marketing</option>
@@ -206,22 +198,12 @@ const CreateEmployeeScreen = () => {
         </Card.Body>
       </Card>
 
-      <Modal show={showModal} onHide={handleClose} centered>
-        <Modal.Header
-          closeButton
-          style={{ backgroundColor: "#343a40", color: "white" }}
-        >
-          <Modal.Title className="text-center w-100">Success!</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="text-center" style={{ fontSize: "1.2rem" }}>
-          Employee Created Successfully!
-        </Modal.Body>
-        <Modal.Footer className="d-flex justify-content-center">
-          <Button variant="success" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title="Employee Added"
+        children="Employee has been added successfully!"
+      />
     </>
   );
 };
