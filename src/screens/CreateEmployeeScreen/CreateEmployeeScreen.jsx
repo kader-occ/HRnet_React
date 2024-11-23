@@ -12,9 +12,9 @@ const CreateEmployeeScreen = () => {
   const [startDate, setStartDate] = useState("");
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
-  const [state, setState] = useState(states);
+  const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
-  const [department, setDepartment] = useState("Sales");
+  const [department, setDepartment] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const closeModal = () => setIsModalOpen(false);
@@ -24,13 +24,13 @@ const CreateEmployeeScreen = () => {
   const resetForm = () => {
     setFirstName("");
     setLastName("");
-    setDateOfBirth(new Date());
-    setStartDate(new Date());
+    setDateOfBirth("");
+    setStartDate("");
     setStreet("");
     setCity("");
-    setState(states[0].abbreviation);
+    setState("");
     setZipCode("");
-    setDepartment("Sales");
+    setDepartment("");
   };
 
   const saveEmployee = (e) => {
@@ -211,6 +211,7 @@ const CreateEmployeeScreen = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
+        type="success"
         title="Employee Added"
         children="Employee has been added successfully!"
       />
