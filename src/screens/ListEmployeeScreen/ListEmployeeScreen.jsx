@@ -60,7 +60,7 @@ const ListEmployeeScreen = () => {
   } = useTable(
     {
       columns,
-      data: employees,
+      data: employees || [],
     },
     useGlobalFilter,
     useSortBy
@@ -86,35 +86,43 @@ const ListEmployeeScreen = () => {
           {employees.length > 0 ? (
             <Table striped bordered hover responsive {...getTableProps()}>
               <thead>
-                {headerGroups.map((headerGroup) => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map((column) => (
-                      <th
-                        {...column.getHeaderProps(
-                          column.getSortByToggleProps()
-                        )}
-                      >
-                        {column.render("Header")}
-                        <span>
-                          {column.isSorted
-                            ? column.isSortedDesc
-                              ? " 🔽"
-                              : " 🔼"
-                            : ""}
-                        </span>
-                      </th>
-                    ))}
-                  </tr>
-                ))}
+                {headerGroups.map((headerGroup) => {
+                  const { key: headerKey, ...headerGroupProps } =
+                    headerGroup.getHeaderGroupProps();
+                  return (
+                    <tr key={headerKey} {...headerGroupProps}>
+                      {headerGroup.headers.map((column) => {
+                        const { key: columnKey, ...columnProps } =
+                          column.getHeaderProps(column.getSortByToggleProps());
+                        return (
+                          <th key={columnKey} {...columnProps}>
+                            {column.render("Header")}
+                            <span>
+                              {column.isSorted
+                                ? column.isSortedDesc
+                                  ? " 🔽"
+                                  : " 🔼"
+                                : ""}
+                            </span>
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
               </thead>
               <tbody {...getTableBodyProps()}>
                 {rows.map((row) => {
+                  // Assurez-vous d'appeler prepareRow avant d'utiliser row.getRowProps()
                   prepareRow(row);
+                  const { key: rowKey, ...rowProps } = row.getRowProps();
                   return (
-                    <tr {...row.getRowProps()}>
+                    <tr key={rowKey} {...rowProps}>
                       {row.cells.map((cell) => {
+                        const { key: cellKey, ...cellProps } =
+                          cell.getCellProps();
                         return (
-                          <td {...cell.getCellProps()}>
+                          <td key={cellKey} {...cellProps}>
                             {cell.render("Cell")}
                           </td>
                         );
