@@ -1,11 +1,14 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useTable, useSortBy, useGlobalFilter } from "react-table";
 import { useSelector } from "react-redux";
-import { Table, Card, InputGroup, FormControl } from "react-bootstrap";
+import { Table, Card, InputGroup, FormControl, Button } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 
 const ListEmployeeScreen = () => {
   const employees = useSelector((state) => state.employees.employees);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const rowsPerPage = 10;
 
   const columns = useMemo(
     () => [
@@ -66,6 +69,20 @@ const ListEmployeeScreen = () => {
     useSortBy
   );
 
+  const startRow = currentPage * rowsPerPage;
+  const endRow = startRow + rowsPerPage;
+  const paginatedRows = rows.slice(startRow, endRow);
+
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+  const goToNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
+  };
+
+  const goToPreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 0));
+  };
+
   return (
     <>
       <Card>
@@ -84,54 +101,76 @@ const ListEmployeeScreen = () => {
             </InputGroup.Text>
           </InputGroup>
           {employees.length > 0 ? (
-            <Table striped bordered hover responsive {...getTableProps()}>
-              <thead>
-                {headerGroups.map((headerGroup) => {
-                  const { key: headerKey, ...headerGroupProps } =
-                    headerGroup.getHeaderGroupProps();
-                  return (
-                    <tr key={headerKey} {...headerGroupProps}>
-                      {headerGroup.headers.map((column) => {
-                        const { key: columnKey, ...columnProps } =
-                          column.getHeaderProps(column.getSortByToggleProps());
-                        return (
-                          <th key={columnKey} {...columnProps}>
-                            {column.render("Header")}
-                            <span>
-                              {column.isSorted
-                                ? column.isSortedDesc
-                                  ? " 🔽"
-                                  : " 🔼"
-                                : ""}
-                            </span>
-                          </th>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </thead>
-              <tbody {...getTableBodyProps()}>
-                {rows.map((row) => {
-                  // Assurez-vous d'appeler prepareRow avant d'utiliser row.getRowProps()
-                  prepareRow(row);
-                  const { key: rowKey, ...rowProps } = row.getRowProps();
-                  return (
-                    <tr key={rowKey} {...rowProps}>
-                      {row.cells.map((cell) => {
-                        const { key: cellKey, ...cellProps } =
-                          cell.getCellProps();
-                        return (
-                          <td key={cellKey} {...cellProps}>
-                            {cell.render("Cell")}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
+            <>
+              <Table striped bordered hover responsive {...getTableProps()}>
+                <thead>
+                  {headerGroups.map((headerGroup) => {
+                    const { key: headerKey, ...headerGroupProps } =
+                      headerGroup.getHeaderGroupProps();
+                    return (
+                      <tr key={headerKey} {...headerGroupProps}>
+                        {headerGroup.headers.map((column) => {
+                          const { key: columnKey, ...columnProps } =
+                            column.getHeaderProps(
+                              column.getSortByToggleProps()
+                            );
+                          return (
+                            <th key={columnKey} {...columnProps}>
+                              {column.render("Header")}
+                              <span>
+                                {column.isSorted
+                                  ? column.isSortedDesc
+                                    ? " 🔽"
+                                    : " 🔼"
+                                  : ""}
+                              </span>
+                            </th>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </thead>
+                <tbody {...getTableBodyProps()}>
+                  {paginatedRows.map((row) => {
+                    prepareRow(row);
+                    const { key: rowKey, ...rowProps } = row.getRowProps();
+                    return (
+                      <tr key={rowKey} {...rowProps}>
+                        {row.cells.map((cell) => {
+                          const { key: cellKey, ...cellProps } =
+                            cell.getCellProps();
+                          return (
+                            <td key={cellKey} {...cellProps}>
+                              {cell.render("Cell")}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+              <div className="d-flex justify-content-between align-items-center mt-3">
+                <Button
+                  variant="secondary"
+                  onClick={goToPreviousPage}
+                  disabled={currentPage === 0}
+                >
+                  Previous
+                </Button>
+                <span>
+                  Page {currentPage + 1} of {totalPages}
+                </span>
+                <Button
+                  variant="secondary"
+                  onClick={goToNextPage}
+                  disabled={currentPage === totalPages - 1}
+                >
+                  Next
+                </Button>
+              </div>
+            </>
           ) : (
             <p className="text-center">No employees found.</p>
           )}
